@@ -37,10 +37,11 @@ export const MainPage = () => {
           think.
         </p>
 
-       <Link href="/signup">
-       <Button className="bg-amber-300 text-3xl rounded-4xl text-black py-9 px-10 my-4 border-4 border-amber-300 hover:bg-amber-200 hover:border-4 hover:border-amber-200">
-          Start my page
-        </Button></Link>
+        <Link href="/signup">
+          <Button className="bg-amber-300 text-3xl rounded-4xl text-black py-9 px-10 my-4 border-4 border-amber-300 hover:bg-amber-200 hover:border-4 hover:border-amber-200">
+            Start my page
+          </Button>
+        </Link>
         <p>It’s free and takes less than a minute!</p>
       </div>
       <div>
@@ -61,7 +62,7 @@ export const MainPage = () => {
                 </p>
               </CardHeader>
               <CardDescription className="pt-5">
-                <Image src='/main1.png' alt="main1" width={900} height={100}/>
+                <Image src="/main1.png" alt="main1" width={900} height={100} />
               </CardDescription>
             </CardContent>
           </Card>

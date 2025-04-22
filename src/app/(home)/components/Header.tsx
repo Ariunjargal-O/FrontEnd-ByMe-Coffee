@@ -11,11 +11,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 export const Header = () => {
   return (
     <nav className="w-full flex justify-between items-center p-5 bg-white ">
-      <div className="flex gap-5">
+      <div className="flex gap-5 items-center">
         <Button
           variant="outline"
           className="border-0 shadow-none hover:bg-gray-200 rounded-3xl font-semibold"
@@ -30,17 +31,11 @@ export const Header = () => {
         </Button>
         <div>
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button
-                variant="outline"
-                className="border-0 shadow-none hover:bg-gray-200 rounded-3xl font-semibold"
-              >
-                Resources
-                <ChevronDown />
-              </Button>
+            <DropdownMenuTrigger className="border-0 shadow-none hover:bg-gray-200 rounded-3xl font-semibold flex gap-1 py-2 px-3 items-center">
+              Resources
+              <ChevronDown />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-             
               <DropdownMenuItem>
                 <HelpCircle />
                 Help Cnter
@@ -70,13 +65,19 @@ export const Header = () => {
       <Image src="/brand-logo.svg" alt="logo" width={200} height={50} />
       <div className=" flex gap-5">
         <Link href={"/login"}>
-        <Button
-          variant="outline"
-          className="border-0 shadow-none hover:bg-gray-200 rounded-3xl font-semibold"
-        >
-          Login
-        </Button></Link>
-       <Link href={"/signup"}> <Button className="bg-amber-300 text-black hover:bg-amber-300 rounded-3xl border-2 border-transparent hover:border-amber-300 hover:border-2 font-semibold">Sign up</Button></Link>
+          <Button
+            variant="outline"
+            className="border-0 shadow-none hover:bg-gray-200 rounded-3xl font-semibold"
+          >
+            Login
+          </Button>
+        </Link>
+        <Link href={"/signup"}>
+          {" "}
+          <Button className="bg-amber-300 text-black hover:bg-amber-300 rounded-3xl border-2 border-transparent hover:border-amber-300 hover:border-2 font-semibold">
+            Sign up
+          </Button>
+        </Link>
       </div>
     </nav>
   );
