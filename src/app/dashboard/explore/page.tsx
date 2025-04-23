@@ -28,7 +28,7 @@ export default function ExpolorePage() {
           className="my-5 flex justify-self–end bg-white py-1 px-2 rounded-3xl gap-2 absolute top-0 right-20"
         >
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger className="cursor-pointer">
               <Menu />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-45">
@@ -55,12 +55,12 @@ export default function ExpolorePage() {
         <div className="">
           <p className="font-semibold leading-7 text-lg">Explore creators</p>
           <hr className="" />
-          <div className="bg-white w-300 flex items-center gap-2 border-2 border-gray-200 rounded-2xl px-3 hover:bg-amber-100 mb-10">
+          <div className="bg-white w-[300px] flex items-center gap-2 border-2 border-gray-200 rounded-2xl px-3 hover:bg-amber-200 mb-10">
             <Search />
             <Input
               type="search"
               placeholder="Search name"
-              className="border-0 focus-visible:border-0 aria-invalid:ring-0 w-300"
+              className="border-0 focus-visible:border-0 aria-invalid:ring-0 w-[300px]"
             ></Input>
           </div>
         </div>

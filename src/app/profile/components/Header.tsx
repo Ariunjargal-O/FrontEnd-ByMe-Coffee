@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Menu } from "lucide-react";
+import Link from "next/link";
 
 export const Header = () => {
   return (
@@ -27,16 +28,16 @@ export const Header = () => {
           className="my-5 flex justify-self–end bg-white py-1 px-2 rounded-3xl gap-2 absolute top-0 right-20"
         >
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger className="cursor-pointer">
               <Menu />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-45">
               <DropdownMenuItem className="font-semibold">
                 View my page
               </DropdownMenuItem>
-              <DropdownMenuItem className="font-semibold">
+              <Link href={"/dashboard"}><DropdownMenuItem className="font-semibold" >
                 Dashboard
-              </DropdownMenuItem>
+              </DropdownMenuItem></Link>
               <DropdownMenuItem>My account</DropdownMenuItem>
               <DropdownMenuItem>Refer a creator</DropdownMenuItem>
               <DropdownMenuItem>What's name</DropdownMenuItem>
