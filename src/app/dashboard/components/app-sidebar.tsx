@@ -46,7 +46,7 @@ const items: MenuItem[] = [
     group: "",
     links: [
       { title: "Home", url: "/dashboard", icon: Home },
-      { title: "View page", url: "/dashboard/page", icon: PanelsTopLeft },
+      { title: "View page", url: "/viewpage", icon: PanelsTopLeft },
       { title: "Explore creators", url: "/dashboard/explore", icon: LayoutGrid },
     ],
   },
@@ -62,8 +62,8 @@ const items: MenuItem[] = [
   {
     group: "Settings",
     links: [
-      { title: "Buttons & Graphics", url: "/dashboard/buttons", icon: PanelsRightBottom },
-      { title: "Integrations", url: "#", icon: Zap },
+      { title: "Buttons & Graphics", url: "/dashboard/buttonsandgraphics", icon: PanelsRightBottom },
+      { title: "Integrations", url: "integrations", icon: Zap },
       { title: "Payouts", url: "/dashboard/payouts", icon: CircleDollarSign },
       { title: "Settings", url: "/dashboard/accsettings", icon: Settings },
     ],

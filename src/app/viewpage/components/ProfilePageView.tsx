@@ -1,0 +1,200 @@
+"use client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Camera, Heart } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Dialog } from "@/components/ui/dialog";
+import { DialogTrigger } from "@radix-ui/react-dialog";
+import { EditProfile } from "./EditProfile";
+
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+});
+
+export const ProfilePageView = () => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+    },
+  });
+  return (
+    <div className="w-screen h-screen">
+      <div className="pt-20"></div>
+      <div className="h-1/3 bg-gray-200 flex justify-center items-center">
+        <Button className="">
+          <Camera /> Add a cover image
+        </Button>
+      </div>
+      <div className="flex gap-10 w-screen justify-between px-20 absolute top-70">
+        <div className="flex gap-5 flex-col">
+          <Card>
+            <CardContent>
+              <CardHeader className="flex justify-between">
+                <div className="flex flex-row gap-4 items-center">
+                  <Avatar>
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <p className="text-3xl font-bold leading-7">PRO ner</p>
+                </div>
+                <Dialog>
+                  <EditProfile />
+                </Dialog>
+              </CardHeader>
+              <hr className="my-5" />
+              <div>
+                <p className="font-semibold text-base leading-6 pb-3">
+                  About PRONER
+                </p>
+                <p className="font-normal text-sm leading-5"> dsfghjnkml,;;.</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent>
+              {" "}
+              <div className="flex flex-col gap-2 w-[420px]">
+                <p className="font-semibold text-base leading-6 text-black">
+                  Social media URL
+                </p>
+                <p className="font-normal text-sm leading-5">
+                  https://buymeacoffee.com/baconpancakes1
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent>
+              <p className="font-semibold text-base leading-6 text-black mb-5">
+                Recent Supporters
+              </p>
+              <Card className="w-[584px] h-[140px]">
+                <CardContent className=" flex justify-center items-center">
+                  <div className="flex flex-col gap-5">
+                    <Heart />
+                    <p className="font-semibold text-base leading-6">
+                      Be the first one to support Jake
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="w-screen">
+          <Card>
+            <CardContent className="flex flex-col gap-5 ">
+              <CardHeader>
+                <p className="font-semibold text-base leading-6 pb-3">
+                  Buy Jake a Coffee
+                </p>
+              </CardHeader>
+              <div>
+                <div>
+                  <p>Select amount : </p>
+                  <div className="flex gap-3 mt-1 mb-6">
+                    <Button
+                      className="bg-gray-200 hover:bg-amber-200"
+                      variant={"outline"}
+                    >
+                      $1
+                    </Button>
+                    <Button
+                      className="bg-gray-200 hover:bg-amber-200"
+                      variant={"outline"}
+                    >
+                      $2
+                    </Button>
+                    <Button
+                      className="bg-gray-200 hover:bg-amber-200"
+                      variant={"outline"}
+                    >
+                      $5
+                    </Button>
+                    <Button
+                      className="bg-gray-200 hover:bg-amber-200"
+                      variant={"outline"}
+                    >
+                      $10
+                    </Button>
+                  </div>
+                </div>
+                <div>
+                  <Form {...form}>
+                    <form
+                      //   onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-8"
+                    >
+                      <FormField
+                        control={form.control}
+                        name="username"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Enter BuyMeCoffee or social acount URL:
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="shadcn" {...field} />
+                            </FormControl>
+                            <FormDescription></FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </form>
+                  </Form>
+                  <div>
+                    <Form {...form}>
+                      <form
+                        //   onSubmit={form.handleSubmit(onSubmit)}
+                        className="space-y-8"
+                      >
+                        <FormField
+                          control={form.control}
+                          name="username"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Special message</FormLabel>
+                              <FormControl>
+                                <Input placeholder="shadcn" {...field} />
+                              </FormControl>
+                              <FormDescription></FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </form>
+                    </Form>
+                  </div>
+                </div>
+              </div>
+              <Button
+                variant={"outline"}
+                type="submit"
+                className="bg-gray-200 hover:bg-amber-200"
+              >
+                Support
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
