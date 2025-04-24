@@ -1,4 +1,6 @@
 
 export default function ButtonsPage () {
-    return(<div></div>)
+    return(<div>
+        Buttons and Graphics
+    </div>)
 }

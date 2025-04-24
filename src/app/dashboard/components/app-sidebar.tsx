@@ -63,9 +63,9 @@ const items: MenuItem[] = [
     group: "Settings",
     links: [
       { title: "Buttons & Graphics", url: "/dashboard/buttonsandgraphics", icon: PanelsRightBottom },
-      { title: "Integrations", url: "/integrations", icon: Zap },
+      { title: "Integrations", url: "/dashboard/integrations", icon: Zap },
       { title: "Payouts", url: "/dashboard/payouts", icon: CircleDollarSign },
-      { title: "Settings", url: "/dashboard/accsettings", icon: Settings },
+      { title: "Settings", url: "/dashboard/accountsettings", icon: Settings },
     ],
   },
 ];
