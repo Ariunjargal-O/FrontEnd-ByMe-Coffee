@@ -56,14 +56,14 @@ const items: MenuItem[] = [
       { title: "Supporters", url: "/dashboard/supporters", icon: Heart },
       { title: "Membership", url: "/dashboard/membership", icon: LucideLockKeyhole },
       { title: "Shop", url: "/dashboard/shop", icon: ShoppingBag },
-      { title: "Publish", url: "#", icon: Pencil },
+      { title: "Publish", url: "/dashboard/publish", icon: Pencil },
     ],
   },
   {
     group: "Settings",
     links: [
       { title: "Buttons & Graphics", url: "/dashboard/buttonsandgraphics", icon: PanelsRightBottom },
-      { title: "Integrations", url: "integrations", icon: Zap },
+      { title: "Integrations", url: "/integrations", icon: Zap },
       { title: "Payouts", url: "/dashboard/payouts", icon: CircleDollarSign },
       { title: "Settings", url: "/dashboard/accsettings", icon: Settings },
     ],
