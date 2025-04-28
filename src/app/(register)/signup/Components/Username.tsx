@@ -20,15 +20,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 
-type TypeUser = {
-  createdat: string;
-  email: string;
-  id: number;
-  password: string;
-  receiveddonation: number;
-  updatedat: string;
-  username: string;
-};
+
 
 export const Username = () => {
 

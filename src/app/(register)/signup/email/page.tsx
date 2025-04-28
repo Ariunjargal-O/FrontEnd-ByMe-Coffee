@@ -34,7 +34,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export default function EmailPage() {
-
+  const router = useRouter()
   const formSchema = z.object({
     username: z.string().min(5, {
       message: "Username must be at least 5 characters.",
@@ -58,14 +58,15 @@ export default function EmailPage() {
   const onSubmit = async (val: FormValuesType): Promise<void> => {
     try {
       const username = localStorage.getItem("username");
-      const response = await axios.post(`http://localhost:8000/sign-up/username`, {
-        username,
+      const response = await axios.post(`http://localhost:8000/sign-up`, {
+        username: username,
         email: val.email,
         password: val.password,
       });
       const user = response.data;
       if (user) {
         console.log("amjilttai burtgegdlee");
+        router.push('/sign-up/createaccount')
       }
     } catch (err) {
       console.log(err);
@@ -135,12 +136,13 @@ export default function EmailPage() {
                 onSubmit={form.handleSubmit(onSubmit)}
               >
                 <FormField
-                  name="username"
+                  name="email"
                   render={({ field }) => (
                     <FormItem className="mb-5">
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input
+                        type="email"
                           // value={`buymeacoffee.com/${field.value}`}}
                           placeholder="Please your email"
                           {...field}
@@ -152,12 +154,13 @@ export default function EmailPage() {
                   )}
                 />
                 <FormField
-                  name="username"
+                  name="password"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
                         <Input
+                        type="password"
                           // value={`buymeacoffee.com/${field.value}`}}
                           placeholder="Please your password"
                           {...field}
