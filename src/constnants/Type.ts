@@ -15,3 +15,13 @@ export type FormValuesType = {
 email:string
 password: string
 }
+
+export type TypeUser = {
+  createdat: string;
+  email: string;
+  id: number;
+  password: string;
+  receiveddonation: number;
+  updatedat: string;
+  username: string;
+};

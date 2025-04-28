@@ -54,7 +54,7 @@ const formSchema = z.object({
     try {
       const { username } = values;
       const response = await axios.post(
-        `http://localhost:8000/users/sign-up`,
+        `http://localhost:8000/users/sign-up/username`,
         {
           username,
         }

@@ -29,8 +29,12 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import axios from "axios";
 import { FormValuesType } from "@/constnants/Type";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function EmailPage() {
+
   const formSchema = z.object({
     username: z.string().min(5, {
       message: "Username must be at least 5 characters.",
@@ -54,7 +58,7 @@ export default function EmailPage() {
   const onSubmit = async (val: FormValuesType): Promise<void> => {
     try {
       const username = localStorage.getItem("username");
-      const response = await axios.post(`http://localhost:8000/sign-up`, {
+      const response = await axios.post(`http://localhost:8000/sign-up/username`, {
         username,
         email: val.email,
         password: val.password,

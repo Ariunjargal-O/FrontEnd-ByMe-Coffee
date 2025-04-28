@@ -117,7 +117,7 @@ export default function LoginPage() {
                   type="submit"
                   className="hover:bg-amber-200 bg-amber-300 hover:cursor-pointer rounded-4xl px-15 py-6 text-lg font-semibold border-0"
                 >
-                  Contunie with email
+                  Continue with email
                 </Button>
                 < div className="flex items-center justify-between gap-2">
                   <hr className="w-full border-gray-300" />
