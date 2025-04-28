@@ -3,11 +3,8 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { z } from "zod";
-
 import { useForm } from "react-hook-form";
-
 import Autoplay from "embla-carousel-autoplay";
-
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -16,26 +13,14 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Email } from "./Components/Email";
 import { Username } from "./Components/Username";
+import { useEffect, useState } from "react";
+import { BASE_URL } from "@/constnants";
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
+
 
 export default function SignUpPage() {
-  const form = useForm({
-    // resolver: async (data) => {
-    //   try {
-    //     formSchema.parse(data);
-    //     return { values: data, errors: {} };
-    //   } catch (error) {
-    //     return { values: {}, errors: error.formErrors.fieldErrors };
-    //   }
-    // },
-  });
+
   return (
     <div className="w-full bg-yellow-300 flex h-screen ">
       <div className="w-1/2">
@@ -86,7 +71,7 @@ export default function SignUpPage() {
         </div>
         <div className="flex justify-center self-center h-full">
         <Username/>         
-          {/* <Email/> */}
+          
 
         </div>
       </div>

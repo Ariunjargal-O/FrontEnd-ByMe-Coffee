@@ -1,3 +1,4 @@
+"use client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,8 +13,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { BASE_URL } from "@/constnants";
+import { set } from "zod";
+import { headers } from "next/headers";
+import { UserProfileType } from "@/constnants/Type";
 
 export default function Page() {
+  const [userProfiles, setUserProfiles] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await fetch(`http://localhost:8000/profiles`, {
+        headers: { "Content-Type": "application/json" },
+      });
+      const user = await res.json();
+      setUserProfiles(user.message);
+      console.log(user.message);
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <div className="px-20 flex gap-5 flex-col">
       <Badge
@@ -28,9 +49,11 @@ export default function Page() {
             <DropdownMenuItem className="font-semibold">
               View my page
             </DropdownMenuItem>
-            <Link href={"/dashboard"}><DropdownMenuItem className="font-semibold" >
+            <Link href={"/dashboard"}>
+              <DropdownMenuItem className="font-semibold">
                 Dashboard
-              </DropdownMenuItem></Link>
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem>My account</DropdownMenuItem>
             <DropdownMenuItem>Refer a creator</DropdownMenuItem>
             <DropdownMenuItem>What's name</DropdownMenuItem>
@@ -50,19 +73,24 @@ export default function Page() {
           <div
             className="flex justify-between items-center
           "
-          >
-            <div className="flex gap-5 items-center">
+          >{userProfiles.map((userProfile:UserProfileType) => {
+            return(
+              <div className="flex gap-5 items-center">
+              
               <Avatar className="w-15 h-15">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage src={userProfile.avatarimage} />
+                <AvatarFallback>AV</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <p className="font-bold text-2xl leading-6">Hi, Ariunjargal</p>
+                <p className="font-bold text-2xl leading-6">Hi, {userProfile.name}</p>
                 <p className="font-normal text-lg mt-2 leading-5">
-                  link ni bn shuu
+                {/* buymeacoffee.com/{userProfile.} */}
                 </p>
               </div>
             </div>
+            )
+          })}
+           
             <Button className="rounded-2xl px-4">
               <Share />
               Shares page
@@ -74,12 +102,14 @@ export default function Page() {
               <p className="font-semibold text-2xl leading-7">Earnings</p>
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                <Badge variant={"outline"} className="rounded-3xl px-5 py-2 text-base">
+                  <Badge
+                    variant={"outline"}
+                    className="rounded-3xl px-5 py-2 text-base"
+                  >
                     Last 30 days <ChevronDown />
                   </Badge>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                
                   <DropdownMenuItem>Last 30 days</DropdownMenuItem>
                   <DropdownMenuItem>Last 90 days</DropdownMenuItem>
                   <DropdownMenuItem>All time</DropdownMenuItem>
