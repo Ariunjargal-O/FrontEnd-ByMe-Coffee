@@ -17,24 +17,36 @@ import { useEffect, useState } from "react";
 import { BASE_URL } from "@/constnants";
 import { set } from "zod";
 import { headers } from "next/headers";
-import { UserProfileType } from "@/constnants/Type";
+import { UserProfileType, UserType } from "@/constnants/Type";
 
 export default function Page() {
   const [userProfiles, setUserProfiles] = useState<any>([]);
-
+  // .get("/view/:username", checkUsername, getUsername) //ok
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch(`http://localhost:8000/profiles`, {
+      const res = await fetch(`http://localhost:8000/profiles/`, {
         headers: { "Content-Type": "application/json" },
       });
       const user = await res.json();
       setUserProfiles(user.message);
+      // console.log(user.message);
+    };
+
+    fetchUser();
+  }, []);
+  const [user, setUser] = useState<any>([]);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await fetch(`http://localhost:8000/users/`, {
+        headers: { "Content-Type": "application/json" },
+      });
+      const user = await res.json();
+      setUser(user.message);
       console.log(user.message);
     };
 
     fetchUser();
   }, []);
-
   return (
     <div className="px-20 flex gap-5 flex-col">
       <Badge
@@ -68,75 +80,80 @@ export default function Page() {
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </Badge>
-      <Card className="mt-20">
-        <CardContent>
-          <div
-            className="flex justify-between items-center
-          "
-          >{userProfiles.map((userProfile:UserProfileType) => {
-            return(
-              <div className="flex gap-5 items-center">
-              
-              <Avatar className="w-15 h-15">
-                <AvatarImage src={userProfile.avatarimage} />
-                <AvatarFallback>AV</AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <p className="font-bold text-2xl leading-6">Hi, {userProfile.name}</p>
-                <p className="font-normal text-lg mt-2 leading-5">
-                {/* buymeacoffee.com/{userProfile.} */}
-                </p>
-              </div>
-            </div>
-            )
-          })}
-           
-            <Button className="rounded-2xl px-4">
-              <Share />
-              Shares page
-            </Button>
-          </div>
-          <hr className="my-5" />
-          <div>
-            <div className="flex gap-5 items-center">
-              <p className="font-semibold text-2xl leading-7">Earnings</p>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Badge
-                    variant={"outline"}
-                    className="rounded-3xl px-5 py-2 text-base"
-                  >
-                    Last 30 days <ChevronDown />
-                  </Badge>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem>Last 30 days</DropdownMenuItem>
-                  <DropdownMenuItem>Last 90 days</DropdownMenuItem>
-                  <DropdownMenuItem>All time</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <p className="text-4xl font-bold py-4">$450</p>
 
-            <div className="flex gap-10 justify-start">
-              <div className="flex gap-1 items-center">
-                <p className="bg-amber-100 w-5 h-5 rounded-sm"></p>
-                <p>$ 0</p>
-                <p className="text-sm text-gray-500">Supporters</p>
+      <Card className="mt-20">
+        {userProfiles.map((userProfile: UserProfileType) => {
+          return (
+            <CardContent key={userProfile.id}>
+              <div
+                className="flex justify-between items-center
+              "
+              >
+                <div className="flex gap-5 items-center">
+                  <Avatar className="w-15 h-15">
+                    <AvatarImage src={userProfile.avatarimage} />
+                    <AvatarFallback>AV</AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <p className="font-bold text-2xl leading-6">
+                      Hi, {userProfile.name}
+                    </p>
+                   
+                      {user.map((user:UserType) => {
+ <p className="font-normal text-lg mt-2 leading-5"> buymeacoffee.com/{ user.username}</p>
+                      }) }
+                     
+                  
+                  </div>
+                </div>
+                <Button className="rounded-2xl px-4">
+                  <Share />
+                  Shares page
+                </Button>
               </div>
-              <div className="flex gap-1 items-center">
-                <p className="bg-pink-100 w-5 h-5 rounded-sm"></p>
-                <p>$ 0</p>
-                <p className="text-sm text-gray-500">Membership</p>
+              <hr className="my-5" />
+              <div>
+                <div className="flex gap-5 items-center">
+                  <p className="font-semibold text-2xl leading-7">Earnings</p>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Badge
+                        variant={"outline"}
+                        className="rounded-3xl px-5 py-2 text-base"
+                      >
+                        Last 30 days <ChevronDown />
+                      </Badge>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem>Last 30 days</DropdownMenuItem>
+                      <DropdownMenuItem>Last 90 days</DropdownMenuItem>
+                      <DropdownMenuItem>All time</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                <p className="text-4xl font-bold py-4">$450</p>
+
+                <div className="flex gap-10 justify-start">
+                  <div className="flex gap-1 items-center">
+                    <p className="bg-amber-100 w-5 h-5 rounded-sm"></p>
+                    <p>$ 0</p>
+                    <p className="text-sm text-gray-500">Supporters</p>
+                  </div>
+                  <div className="flex gap-1 items-center">
+                    <p className="bg-pink-100 w-5 h-5 rounded-sm"></p>
+                    <p>$ 0</p>
+                    <p className="text-sm text-gray-500">Membership</p>
+                  </div>
+                  <div className="flex gap-1 items-center">
+                    <p className="bg-blue-100 w-5 h-5 rounded-sm"></p>
+                    <p>$ 0</p>
+                    <p className="text-sm text-gray-500">Shop</p>
+                  </div>
+                </div>
               </div>
-              <div className="flex gap-1 items-center">
-                <p className="bg-blue-100 w-5 h-5 rounded-sm"></p>
-                <p>$ 0</p>
-                <p className="text-sm text-gray-500">Shop</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
+            </CardContent>
+          );
+        })}
       </Card>
       <Card className="p-5">
         <CardContent className="border-1 p-5">

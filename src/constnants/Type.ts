@@ -16,7 +16,7 @@ email:string
 password: string
 }
 
-export type TypeUser = {
+export type UserType = {
   createdat: string;
   email: string;
   id: number;

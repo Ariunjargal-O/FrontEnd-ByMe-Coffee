@@ -32,9 +32,10 @@ import { FormValuesType } from "@/constnants/Type";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { error } from "console";
 
 export default function EmailPage() {
-  const router = useRouter()
+
   const formSchema = z.object({
     username: z.string().min(5, {
       message: "Username must be at least 5 characters.",
@@ -54,24 +55,64 @@ export default function EmailPage() {
       password: "",
     },
   });
+  const createUser = async (val: z.infer<typeof formSchema>) => {
+    // console.log(val);
+    console.log(BASE_URL);
+    
+    const response = await fetch(`http://localhost:8000/users/sign-up`, {
+      method: "POST",
+      body: JSON.stringify(val),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const user = await response.json();
 
-  const onSubmit = async (val: FormValuesType): Promise<void> => {
+    return user;
+  };
+
+  const router = useRouter();
+  const onSubmit = async (val: z.infer<typeof formSchema>) => {
     try {
-      const username = localStorage.getItem("username");
-      const response = await axios.post(`http://localhost:8000/sign-up`, {
-        username: username,
-        email: val.email,
-        password: val.password,
-      });
-      const user = response.data;
-      if (user) {
-        console.log("amjilttai burtgegdlee");
-        router.push('/sign-up/createaccount')
+      // console.log(val);
+      const user = await createUser(val);
+      if (user){
+        toast ("User successfully register.")
       }
-    } catch (err) {
-      console.log(err);
+
+
+      router.push("/login");
+      console.log(user);
+    } catch (error: unknown) {
+      console.log((error as Error).message);
     }
   };
+// 
+  // const onSubmit = async (val: FormValuesType): Promise<void> => {
+  //   try {
+  //     const username = localStorage.getItem("username");
+
+  //     console.log("Sending data:", {
+  //       username,
+  //       email: val.email,
+  //       password: val.password,
+  //     });
+
+  //     const response = await axios.post(`http://localhost:8000/users/sign-up`, {
+  //       username: username,
+  //       email: val.email,
+  //       password: val.password,
+  //       receivedDonation: false, // Include if required
+  //     });
+
+  //     console.log("Response:", response.data);
+
+  //     toast.success("Account created successfully!");
+  //     router.push("/sign-up/createaccount");
+  //   } catch (err) {
+  //     console.error("Error details:", err);
+  //   }
+  // };
 
   return (
     <div className="w-full bg-yellow-300 flex h-screen ">
@@ -142,7 +183,7 @@ export default function EmailPage() {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input
-                        type="email"
+                          type="email"
                           // value={`buymeacoffee.com/${field.value}`}}
                           placeholder="Please your email"
                           {...field}
@@ -160,7 +201,7 @@ export default function EmailPage() {
                       <FormLabel>Password</FormLabel>
                       <FormControl>
                         <Input
-                        type="password"
+                          type="password"
                           // value={`buymeacoffee.com/${field.value}`}}
                           placeholder="Please your password"
                           {...field}
