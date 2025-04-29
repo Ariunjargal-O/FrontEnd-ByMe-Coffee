@@ -31,13 +31,12 @@ import { useState } from "react";
 import { DecodedTokenType } from "@/constnants/Type";
 import { jwtDecode } from "jwt-decode";
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
+
 
 export default function LoginPage() {
+  const router = useRouter()
+
+
   const formSchema = z.object({
     email: z
       .string()
@@ -53,66 +52,82 @@ export default function LoginPage() {
       password: "",
     },
   });
-  // const createUser = async (val: z.infer<typeof formSchema>) => {
-  //   // console.log(val);
-  //   // console.log(BASE_URL);
-  //   const response = await fetch(`http://localhost:8000/users/sign-in`, {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       email: val.email,
-  //       password: val.password,
-  //     }),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-  //   if (!response.ok) {
-  //     throw new Error("Login failed");
-  //   }
-  //   const user = await response.json();
-
-  //   return user;
-
-  //   toast.success("Login successful!");
-  // };
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
-  const onSubmit = async (val: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await fetch(`http://localhost:8000/users/sign-in`, {
+      const response = await fetch("http://localhost:8000/users/sign-in", {
         method: "POST",
-        body: JSON.stringify({
-          email: val.email,
-          password: val.password,
-        }),
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(values),
       });
-      if (!response.ok) {
-        throw new Error("Login failed");
-        return;
-      }
-      const user = await response.json();
-  if (!user.token) {
-        toast.error("Login failed. No token received.");
-        return;
-      }
-      localStorage.setItem("token", user.token);
-      toast.success("Login successful!");
 
-      const decodeToken: DecodedTokenType = jwtDecode(user.token);
-      console.log(decodeToken)
-      localStorage.setItem("userId","id")
+      const result = await response.json();
+      console.log("Response:", result);
+
+      if (!response.ok || !result.success) {
+        toast(result.message );
+        return;
+      }
+
+      toast.success("Login successful!");
+      localStorage.setItem("userId", result.userId);
       router.push("/dashboard");
-      console.log(user);
-    } catch (error: unknown) {
-      console.error("Login error:", error);
-      toast.error("Login failed. Please check your credentials.");
-    }finally {
-      setIsSubmitting(false);
+    } catch (err) {
+      console.error("Login error:", err);
+      toast("Login failed. Please check your credentials.");
     }
   };
+
+  // // const [isSubmitting, setIsSubmitting] = useState(false);
+  // const router = useRouter();
+  // const onSubmit = async (val: z.infer<typeof formSchema>) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:8000/users/sign-in`, {
+  //       method: "POST",
+  //       body: JSON.stringify({
+  //         email: val.email,
+  //         password: val.password,
+  //       }),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       }
+  //     })
+      
+  //     //     if (!response.ok) {
+  //     //       throw new Error("Login failed");
+  //     //       return;
+  //     //     }
+  //     //     const user = await response.json();
+  //     // if (!user.token) {
+  //     //       toast.error("Login failed. No token received.");
+  //     //       return;
+  //     //     }
+  //     //     localStorage.setItem("token", user.token);
+  //     //     toast.success("Login successful!");
+
+  //     // const decodeToken: DecodedTokenType = jwtDecode(user.token);
+  //     // console.log(decodeToken)
+  //     // localStorage.setItem("userId","id")
+
+  //     const user = await response.json();
+  //     console.log(response);
+  //     // if (user) {
+  //     //   toast("User successfully register.");
+  //     //   console.log("amjilttai burtgegdlee");
+  //     //   localStorage.setItem(
+  //     //     "userId",
+  //     //     user.message.map((item: any) => item.id)
+  //     //   );
+  //     // }
+
+  //     router.push("/dashboard");
+  //     // console.log(user);
+  //   } catch (error: any) {
+  //     console.error("Login error:", error);
+  //     toast.error("Login failed. Please check your credentials.");
+  //   }
+  // };
 
   return (
     <div className="w-full bg-yellow-300 flex h-screen ">

@@ -19,28 +19,24 @@ import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-
-
-
 export const Username = () => {
-
-const formSchema = z.object({
-  username: z
-    .string()
-    .min(3, "Username must be at least 3 characters long")
-    .max(20, "Username must be at most 20 characters long")
+  const formSchema = z.object({
+    username: z
+      .string()
+      .min(3, "Username must be at least 3 characters long")
+      .max(20, "Username must be at most 20 characters long"),
     // .regex(
     //   /^[a-zA-Z0-9_]+$/,
     //   "Username can only contain letters, numbers, and underscores"
     // ),
-});
-  const router = useRouter()
+  });
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
     },
-  })
+  });
 
   const onSubmit = async (values: { username: string }) => {
     try {
@@ -71,8 +67,7 @@ const formSchema = z.object({
         Choose a username for your page
       </p>
       <Form {...form}>
-        <form className="space-y-8"
-        onSubmit={form.handleSubmit(onSubmit)}>
+        <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             name="username"
             render={({ field }) => (
@@ -93,7 +88,6 @@ const formSchema = z.object({
             variant="outline"
             type="submit"
             className="hover:bg-amber-300 bg-gray-200 hover:cursor-pointer"
-            
           >
             Submit
           </Button>

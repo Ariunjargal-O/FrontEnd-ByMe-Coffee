@@ -53,6 +53,7 @@ export default function EmailPage() {
   const createUser = async (val: z.infer<typeof formSchema>) => {
     // console.log(val);
     // console.log(BASE_URL);
+   try{
     const username = localStorage.getItem("username");
     const response = await fetch(`http://localhost:8000/users/sign-up`, {
       method: "POST",
@@ -68,6 +69,9 @@ export default function EmailPage() {
     const user = await response.json();
 
     return user;
+   }catch(error:any){
+    console.log(error.message)
+   }
   };
 
   const router = useRouter();
