@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Camera } from "lucide-react";
 // import { useNavigate } from "react-router-dom";
 
-export const AccountSec = () => {
+export const ProfileAcoountSec = () => {
     const [image, setImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [name, setName] = useState("");

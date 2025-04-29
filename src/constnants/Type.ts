@@ -1,20 +1,20 @@
 export type UserProfileType = {
   about: string;
-  avatarimage: string
-  backgroundimage: string
-  createdat: string
-  id: number
-  name: string
-  socialmediaurl: string
-  successmessage: string
-  updatedat: string
-  userid: number
+  avatarimage: string;
+  backgroundimage: string;
+  createdat: string;
+  id: number;
+  name: string;
+  socialmediaurl: string;
+  successmessage: string;
+  updatedat: string;
+  userid: number;
 };
 
 export type FormValuesType = {
-email:string
-password: string
-}
+  email: string;
+  password: string;
+};
 
 export type UserType = {
   createdat: string;
@@ -24,4 +24,8 @@ export type UserType = {
   receiveddonation: number;
   updatedat: string;
   username: string;
+};
+
+export type DecodedTokenType = {
+  user: { email: string; password: string; id: number };
 };

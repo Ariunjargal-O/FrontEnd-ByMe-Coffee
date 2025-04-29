@@ -29,7 +29,7 @@ export default function Page() {
       });
       const user = await res.json();
       setUserProfiles(user.message);
-      // console.log(user.message);
+      console.log(user.message);
     };
 
     fetchUser();
@@ -42,7 +42,7 @@ export default function Page() {
       });
       const user = await res.json();
       setUser(user.message);
-      console.log(user.message);
+      // console.log(user.message);
     };
 
     fetchUser();
