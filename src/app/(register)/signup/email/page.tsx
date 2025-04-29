@@ -33,13 +33,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { error } from "console";
+import { Username } from "../Components/Username";
 
 export default function EmailPage() {
-
   const formSchema = z.object({
-    username: z.string().min(5, {
-      message: "Username must be at least 5 characters.",
-    }),
     email: z
       .string()
       .email("Please enter a valid email address")
@@ -50,18 +47,21 @@ export default function EmailPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
       email: "",
       password: "",
     },
   });
   const createUser = async (val: z.infer<typeof formSchema>) => {
     // console.log(val);
-    console.log(BASE_URL);
-    
+    // console.log(BASE_URL);
+    const username = localStorage.getItem("username");
     const response = await fetch(`http://localhost:8000/users/sign-up`, {
       method: "POST",
-      body: JSON.stringify(val),
+      body: JSON.stringify({
+        username: username,
+        email: val.email,
+        password: val.password,
+      }),
       headers: {
         "Content-Type": "application/json",
       },
@@ -76,43 +76,17 @@ export default function EmailPage() {
     try {
       // console.log(val);
       const user = await createUser(val);
-      if (user){
-        toast ("User successfully register.")
+      if (user) {
+        toast("User successfully register.");
       }
 
-
-      router.push("/login");
+      router.push("/signup/createaccount");
       console.log(user);
     } catch (error: unknown) {
       console.log((error as Error).message);
     }
   };
-// 
-  // const onSubmit = async (val: FormValuesType): Promise<void> => {
-  //   try {
-  //     const username = localStorage.getItem("username");
-
-  //     console.log("Sending data:", {
-  //       username,
-  //       email: val.email,
-  //       password: val.password,
-  //     });
-
-  //     const response = await axios.post(`http://localhost:8000/users/sign-up`, {
-  //       username: username,
-  //       email: val.email,
-  //       password: val.password,
-  //       receivedDonation: false, // Include if required
-  //     });
-
-  //     console.log("Response:", response.data);
-
-  //     toast.success("Account created successfully!");
-  //     router.push("/sign-up/createaccount");
-  //   } catch (err) {
-  //     console.error("Error details:", err);
-  //   }
-  // };
+  
 
   return (
     <div className="w-full bg-yellow-300 flex h-screen ">
