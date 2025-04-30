@@ -16,9 +16,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Dialog } from "@/components/ui/dialog";
-import { DialogTrigger } from "@radix-ui/react-dialog";
 import { EditProfile } from "@/app/viewpage/components/EditProfile";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import Image from "next/image";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -177,13 +184,21 @@ export const ProfilePageView = () => {
                   </div>
                 </div>
               </div>
-              <Button
-                variant={"outline"}
-                type="submit"
-                className="bg-gray-200 hover:bg-amber-200"
-              >
-                Support
-              </Button>
+              <Dialog>
+                <DialogTrigger className="bg-gray-200 hover:bg-amber-200 py-2 rounded-sm">
+                  Support
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle className="flex flex-col justify-between">
+                      <p className="text-2xl">Scan QR code</p>
+                      <p className="text-lg text-gray-400"> Scan the QR code to complete your donation</p></DialogTitle>
+                      </DialogHeader>
+                   <Image alt={"QR"} src="/QR.png" width={300} height={100}></Image>
+                   
+              
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
         </div>

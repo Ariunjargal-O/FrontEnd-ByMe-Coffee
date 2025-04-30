@@ -2,37 +2,64 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Heart, Icon, Menu, Share } from "lucide-react";
+import { ChevronDown, Heart, Menu } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "@/constnants";
-import { set } from "zod";
-import { headers } from "next/headers";
-import { UserProfileType, UserType } from "@/constnants/Type";
+import { UserProfileType } from "@/constnants/Type";
+import { CopyButton } from "./components/ProfileShare";
 
 export default function Page() {
-const [profiles, setProfiles] = useState([])
-  useEffect(()=> {
+  // Initialize as null to properly handle conditional rendering
+  const [profile, setProfile] = useState<UserProfileType | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const userId = localStorage.getItem("userId");
+  useEffect(() => {
     const getPro = async () => {
-      const res = await fetch (`http://localhost:8000/profiles`, {
+      try {
+        setLoading(true);
+        const userId = localStorage.getItem("userId");
         
-        headers:{"Content-Type":"application/json"}
-      })
-const data = await res.json()
-// console.log(data.message)
-setProfiles(data.message)
-    }
-    getPro()
-  },[])
+        if (!userId) {
+          setError("No user ID found. Please log in again.");
+          setLoading(false);
+          return;
+        }
+        
+        const res = await fetch(`http://localhost:8000/profiles/${userId}`, {
+          headers: { "Content-Type": "application/json" },
+        });
+        
+        const data = await res.json();
+        
+        if (data.success) {
+          console.log("Profile data:", data.message);
+          setProfile(data.message);
+        } else {
+          setError(data.message || "Failed to load profile");
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        setError("An error occurred while fetching profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    getPro();
+  }, []);
+
+  const Logout = () => {
+    localStorage.removeItem("userId");
+  };
+
   return (
     <div className="px-20 flex gap-5 flex-col">
       <Badge
@@ -44,9 +71,10 @@ setProfiles(data.message)
             <Menu />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-45">
-            <DropdownMenuItem className="font-semibold">
-              View my page
-            </DropdownMenuItem>
+          <Link href={"/profile/${userId}"}>
+             <DropdownMenuItem className="font-semibold">
+                View my page
+              </DropdownMenuItem></Link>
             <Link href={"/dashboard"}>
               <DropdownMenuItem className="font-semibold">
                 Dashboard
@@ -55,9 +83,14 @@ setProfiles(data.message)
             <DropdownMenuItem>My account</DropdownMenuItem>
             <DropdownMenuItem>Refer a creator</DropdownMenuItem>
             <DropdownMenuItem>What's name</DropdownMenuItem>
-            <DropdownMenuItem className="font-normal text-gray-400 ">
-              Logout
-            </DropdownMenuItem>
+            <Link href={"/"}>
+              <DropdownMenuItem
+                className="font-normal text-gray-400 hover:bg-amber-300"
+                onClick={Logout}
+              >
+                Logout
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -67,14 +100,22 @@ setProfiles(data.message)
         </Avatar>
       </Badge>
 
-      <Card className="mt-20">
-      {
-        profiles.map((profile:UserProfileType) => {
-          return(<CardContent key={profile.id}>
-            <div
-              className="flex justify-between items-center
-            "
-            >
+      {loading ? (
+        <Card className="mt-20">
+          <CardContent className="flex justify-center items-center p-10">
+            Loading profile data...
+          </CardContent>
+        </Card>
+      ) : error ? (
+        <Card className="mt-20">
+          <CardContent className="flex justify-center items-center p-10 text-red-500">
+            {error}
+          </CardContent>
+        </Card>
+      ) : profile ? (
+        <Card className="mt-20">
+          <CardContent>
+            <div className="flex justify-between items-center">
               <div className="flex gap-5 items-center">
                 <Avatar className="w-15 h-15">
                   <AvatarImage src={profile.avatarimage} />
@@ -84,16 +125,12 @@ setProfiles(data.message)
                   <p className="font-bold text-2xl leading-6">
                     Hi, {profile.name}
                   </p>
-                  <p className="font-normal text-lg mt-2 leading-5"> buymeacoffee.com/{ }</p>
-                  
-                   
-                
+                  <p className="font-normal text-lg mt-2 leading-5">
+                    buymeacoffee.com/{userId}
+                  </p>
                 </div>
               </div>
-              <Button className="rounded-2xl px-4">
-                <Share />
-                Shares page
-              </Button>
+              <CopyButton userId = {userId} />
             </div>
             <hr className="my-5" />
             <div>
@@ -115,7 +152,7 @@ setProfiles(data.message)
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <p className="text-4xl font-bold py-4">$450</p>
+              <p className="text-4xl font-bold py-4">${}</p>
 
               <div className="flex gap-10 justify-start">
                 <div className="flex gap-1 items-center">
@@ -135,15 +172,21 @@ setProfiles(data.message)
                 </div>
               </div>
             </div>
-          </CardContent>)
-        })
-      }
-      </Card>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="mt-20">
+          <CardContent className="flex justify-center items-center p-10">
+            No profile data available
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="p-5">
         <CardContent className="border-1 p-5">
           <div className="flex flex-col items-center justify-center gap-2">
             <Badge className="bg-gray-400 w-10 h-10 rounded-full">
-              <Heart className="" />
+              <Heart />
             </Badge>
             <p className="font-semibold text-xl">
               You don't have any supporters yet
@@ -162,7 +205,7 @@ setProfiles(data.message)
         <CardContent></CardContent>
       </Card>
       <Card>
-        <CardContent className=""></CardContent>
+        <CardContent></CardContent>
       </Card>
     </div>
   );

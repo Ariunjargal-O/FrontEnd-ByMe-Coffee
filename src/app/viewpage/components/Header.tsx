@@ -1,3 +1,4 @@
+"use client"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,6 +13,10 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 
 export const Header = () => {
+ 
+  const Logout = () => {
+    localStorage.removeItem("userId");
+  };
   return (
     <nav className="flex h-20 px-10 py-5 fixed bg-white justify-between w-screen">
       <div className="flex flex-row gap-4 items-center">
@@ -32,18 +37,24 @@ export const Header = () => {
               <Menu />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-45">
-              <DropdownMenuItem className="font-semibold">
+             <Link href={"/profile/${userId}"}>
+             <DropdownMenuItem className="font-semibold">
                 View my page
-              </DropdownMenuItem>
+              </DropdownMenuItem></Link>
               <Link href={"/dashboard"}><DropdownMenuItem className="font-semibold" >
                 Dashboard
               </DropdownMenuItem></Link>
               <DropdownMenuItem>My account</DropdownMenuItem>
               <DropdownMenuItem>Refer a creator</DropdownMenuItem>
               <DropdownMenuItem>What's name</DropdownMenuItem>
-              <DropdownMenuItem className="font-normal text-gray-400 ">
+              <Link href={"/"}>
+              <DropdownMenuItem
+                className="font-normal text-gray-400 hover:bg-amber-300"
+                onClick={Logout}
+              >
                 Logout
               </DropdownMenuItem>
+            </Link>
             </DropdownMenuContent>
           </DropdownMenu>
 

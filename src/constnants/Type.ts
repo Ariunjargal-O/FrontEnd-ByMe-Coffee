@@ -6,7 +6,6 @@ export type UserProfileType = {
   id: number;
   name: string;
   socialmediaurl: string;
-  successmessage: string;
   updatedat: string;
   userid: number;
 };

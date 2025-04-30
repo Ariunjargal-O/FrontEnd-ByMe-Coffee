@@ -19,6 +19,8 @@ import { Input } from "@/components/ui/input";
 import { Dialog } from "@/components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { EditProfile } from "./EditProfile";
+import { useEffect, useState } from "react";
+import { UserProfileType } from "@/constnants/Type";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -33,6 +35,50 @@ export const ProfilePageView = () => {
       username: "",
     },
   });
+
+
+
+  const [profile, setProfile] = useState<UserProfileType | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    
+    useEffect(() => {
+      const getPro = async () => {
+        try {
+          setLoading(true);
+          const userId = localStorage.getItem("userId");
+          
+          if (!userId) {
+            setError("No user ID found. Please log in again.");
+            setLoading(false);
+            return;
+          }
+          
+          const res = await fetch(`http://localhost:8000/profiles/${userId}`, {
+            headers: { "Content-Type": "application/json" },
+          });
+          
+          const data = await res.json();
+          
+          if (data.success) {
+            console.log("Profile data:", data.message);
+            setProfile(data.message);
+          } else {
+            setError(data.message || "Failed to load profile");
+          }
+        } catch (error) {
+          console.error("Error fetching profile:", error);
+          setError("An error occurred while fetching profile");
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      getPro();
+    }, []);
+  
+   
+  
   return (
     <div className="w-screen h-screen">
       <div className="pt-20"></div>
@@ -51,7 +97,7 @@ export const ProfilePageView = () => {
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
-                  <p className="text-3xl font-bold leading-7">PRO ner</p>
+                  <p className="text-3xl font-bold leading-7">{profile?.name}</p>
                 </div>
                 <Dialog>
                   <EditProfile />
@@ -60,9 +106,9 @@ export const ProfilePageView = () => {
               <hr className="my-5" />
               <div>
                 <p className="font-semibold text-base leading-6 pb-3">
-                  About PRONER
+                  About {profile?.name}
                 </p>
-                <p className="font-normal text-sm leading-5"> dsfghjnkml,;;.</p>
+                <p className="font-normal text-sm leading-5"> {profile?.about}</p>
               </div>
             </CardContent>
           </Card>
@@ -74,7 +120,7 @@ export const ProfilePageView = () => {
                   Social media URL
                 </p>
                 <p className="font-normal text-sm leading-5">
-                  https://buymeacoffee.com/baconpancakes1
+                http://localhost:3000/profile/{profile?.userid}
                 </p>
               </div>
             </CardContent>

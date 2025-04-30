@@ -95,14 +95,15 @@ export default function ExpolorePage() {
                       </p>
                     </div>
                   </div>
-                 <Link href={"/profile"}>
-                 <Button
-                    variant={"outline"}
-                    className="rounded-2xl px-4 bg-gray-200 hover:bg-amber-200"
-                  >
-                    View profile
-                    <ExternalLink />
-                  </Button></Link>
+                  <Link href={"/profile/${userId}"}>
+                    <Button
+                      variant={"outline"}
+                      className="rounded-2xl px-4 bg-gray-200 hover:bg-amber-200"
+                    >
+                      View profile
+                      <ExternalLink />
+                    </Button>
+                  </Link>
                 </div>
               </CardHeader>
               <div className="flex justify-between ">
