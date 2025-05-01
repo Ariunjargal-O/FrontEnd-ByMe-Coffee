@@ -39,3 +39,10 @@ export type DonationType = {
   specialmessage: string;
   updatedat: string;
 };
+
+export type CountryApiType = {
+  cities: string[];
+  country: string;
+  iso2: string;
+  iso3: string;
+};

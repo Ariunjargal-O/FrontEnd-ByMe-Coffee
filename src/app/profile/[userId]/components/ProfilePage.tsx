@@ -26,6 +26,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { BASE_URL } from "@/constnants";
+import { UserProfileType } from "@/constnants/Type";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -40,21 +43,45 @@ export const ProfilePageView = () => {
       username: "",
     },
   });
+
+  const [profile, setProfile] = useState<UserProfileType>();
+  const userId = localStorage.getItem("userId");
+  useEffect(() => {
+    console.log(process.env);
+
+    const profile = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/profiles/${userId}`, {
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const data = await res.json();
+        console.log(data.message);
+        setProfile(data.message);
+      } catch (error) {}
+    };
+    profile();
+  }, []);
   return (
     <div className="w-screen h-screen">
       <div className="pt-20"></div>
-      <div className="h-1/3 bg-gray-200 flex justify-center items-center"></div>
-      <div className="flex gap-10 w-screen justify-between px-20 absolute top-70">
+      <img
+        className="h-1/3 bg-gray-200 flex justify-center items-center"
+        src={profile?.backgroundimage}
+      ></img>
+      <div className="grid grid-cols-2 gap-10 px-20 absolute top-70">
         <div className="flex gap-5 flex-col">
           <Card>
-            <CardContent>
+            <CardContent className="box-border">
               <CardHeader className="flex justify-between">
                 <div className="flex flex-row gap-4 items-center">
                   <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={profile?.avatarimage} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
-                  <p className="text-3xl font-bold leading-7">PRO ner</p>
+                  <p className="text-3xl font-bold leading-7">
+                    {profile?.name}
+                  </p>
                 </div>
               </CardHeader>
               <hr className="my-5" />
@@ -62,30 +89,33 @@ export const ProfilePageView = () => {
                 <p className="font-semibold text-base leading-6 pb-3">
                   About PRONER
                 </p>
-                <p className="font-normal text-sm leading-5"> dsfghjnkml,;;.</p>
+                <p className="font-normal text-sm leading-5">
+                  {" "}
+                  {profile?.about}
+                </p>
               </div>
             </CardContent>
           </Card>
           <Card>
-            <CardContent>
+            <CardContent className="box-border">
               {" "}
               <div className="flex flex-col gap-2 w-[420px]">
                 <p className="font-semibold text-base leading-6 text-black">
                   Social media URL
                 </p>
                 <p className="font-normal text-sm leading-5">
-                  https://buymeacoffee.com/baconpancakes1
+                  {profile?.socialmediaurl}
                 </p>
               </div>
             </CardContent>
           </Card>
           <Card>
-            <CardContent>
+            <CardContent className="box-border">
               <p className="font-semibold text-base leading-6 text-black mb-5">
                 Recent Supporters
               </p>
-              <Card className="w-[584px] h-[140px]">
-                <CardContent className=" flex justify-center items-center">
+              <Card className="">
+                <CardContent className=" flex justify-center items-center box-border">
                   <div className="flex flex-col gap-5 items-center justify-center">
                     <Heart />
                     <p className="font-semibold text-base leading-6">
@@ -97,7 +127,7 @@ export const ProfilePageView = () => {
             </CardContent>
           </Card>
         </div>
-        <div className="w-screen">
+        <div className="">
           <Card>
             <CardContent className="flex flex-col gap-5 ">
               <CardHeader>
@@ -105,10 +135,10 @@ export const ProfilePageView = () => {
                   Buy Jake a Coffee
                 </p>
               </CardHeader>
-              <div>
+              <div className="flex flex-col gap-5">
                 <div>
                   <p>Select amount : </p>
-                  <div className="flex gap-3 mt-1 mb-6">
+                  <div className="flex gap-5 mt-1 box-border">
                     <Button
                       className="bg-gray-200 hover:bg-amber-200"
                       variant={"outline"}
@@ -135,7 +165,7 @@ export const ProfilePageView = () => {
                     </Button>
                   </div>
                 </div>
-                <div>
+                <div className="flex flex-col gap-5">
                   <Form {...form}>
                     <form
                       //   onSubmit={form.handleSubmit(onSubmit)}
@@ -179,26 +209,18 @@ export const ProfilePageView = () => {
                             </FormItem>
                           )}
                         />
+                        <Button
+                          variant={"outline"}
+                          type="submit"
+                          className="bg-gray-200 hover:bg-amber-200"
+                        >
+                          Support
+                        </Button>
                       </form>
                     </Form>
                   </div>
                 </div>
               </div>
-              <Dialog>
-                <DialogTrigger className="bg-gray-200 hover:bg-amber-200 py-2 rounded-sm">
-                  Support
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle className="flex flex-col justify-between">
-                      <p className="text-2xl">Scan QR code</p>
-                      <p className="text-lg text-gray-400"> Scan the QR code to complete your donation</p></DialogTitle>
-                      </DialogHeader>
-                   <Image alt={"QR"} src="/QR.png" width={300} height={100}></Image>
-                   
-              
-                </DialogContent>
-              </Dialog>
             </CardContent>
           </Card>
         </div>

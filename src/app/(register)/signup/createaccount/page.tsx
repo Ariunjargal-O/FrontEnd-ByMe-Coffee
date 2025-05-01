@@ -1,164 +1,278 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Camera } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { BASE_URL } from "@/constnants";
+import { toast } from "sonner";
 // import { useNavigate } from "react-router-dom";
 
 export default function ProfileAcoountSec() {
-  const [image, setImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [name, setName] = useState("");
-  const [about, setAbout] = useState("");
-  const [social, setSocial] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const userId = localStorage.getItem("userId");
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
+  const formSchema = z.object({
+    fullname: z
+      .string()
+      .min(2, {
+        message: "Fullname must be at least 2 characters.",
+      })
+      .max(50, {
+        message: "Fullname cannot be longer than 50 characters.",
+      }),
 
-  const isValidUrl = (url: string) => /^https?:\/\/.+/.test(url);
-  const isFormValid = () => image && name && about && isValidUrl(social);
+    about: z
+      .string()
+      .min(100)
+      .max(500, {
+        message: "About section cannot be longer than 500 characters.",
+      })
+      .optional(), // Optional field
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    photo: z.string().url().optional(), // Optional field to store the photo URL
+
+    socialMediaUrl: z
+      .string()
+      .url()
+      .optional()
+      .refine(
+        (val: string | undefined) => {
+          return (
+            val === "" ||
+            /^(http|https):\/\/(www\.)?[\w\-]+(\.[\w\-]+)+[^\s]*$/.test(
+              val || ""
+            )
+          );
+        },
+        {
+          message:
+            "Please enter a valid social media URL starting with http:// or https://",
+        }
+      ),
+  });
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      fullname: "",
+      about: "",
+      photo: "",
+      socialMediaUrl: "",
+    },
+  });
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [files, setFiles] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
     if (file) {
-      setImage(file);
-      setPreviewUrl(URL.createObjectURL(file));
+      setLoading(true);
+      setPhotoPreview(URL.createObjectURL(file)); // Preview the photo
+      // Create a form data object to send the image file to the server
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "i4yxitio"); // Replace with your Cloudinary upload preset
+
+      try {
+        // Send the file to Cloudinary
+        const res = await fetch(
+          "https://api.cloudinary.com/v1_1/drhm9rfyi/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data = await res.json();
+        console.log(data);
+
+        if (data.secure_url) {
+          setImageUrl(data.secure_url); // Set the preview URL from Cloudinary
+          form.setValue("photo", data.secure_url); // Store the URL in the form
+        }
+      } catch (err) {
+        console.error("Error uploading file:", err);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  const userId = localStorage.getItem("userId");
-  useEffect(() => {
-    const createpro = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:8000/donations/create-pro/${userId}`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              name: name,
-              about: about,
-              avatarImage: image,
-              socialMediaURL: social,
-            }),
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-        const profile = await res.json();
+  const router = useRouter();
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setLoading(true);
 
-        return profile;
-      } catch (error: any) {
-        console.log(error.message);
-      }
-    };
-    createpro();
-  }, []);
-
-  const handleSubmit = () => {
-    setSubmitted(true);
-    if (isFormValid()) {
-      console.log({
-        image,
-        name,
-        about,
-        social,
+    try {
+      const res = await fetch(`${BASE_URL}/profiles/${userId}`, {
+        method: "POST",
+        body: JSON.stringify({
+          fullname: data.fullname,
+          about: data.about,
+          photo: data.photo,
+          socialMediaUrl: data.socialMediaUrl,
+        }),
+        headers: { "Content-Type": "application/app" },
       });
-      router.push("/signup/createaccount/bankcard");
+
+      if (res.ok) {
+        toast.success("Profile updated successfully!");
+        router.push("signup/createaccount/bankcard");
+      } else {
+        console.error("Error submitting profile:", res.statusText);
+        toast.error("Failed to update profile. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      toast.error(
+        "Submitting failed. Please check your connection or try again."
+      ); //
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="w-[510px] font-bold">
-        <p className="text-[24px]">Complete your profile page</p>
-
-        <div className="mt-5">
-          <p>Add photo</p>
-          <div
-            onClick={() => fileInputRef.current?.click()}
-            className={`w-[160px] h-[160px] rounded-full border-2 border-dashed mt-2 flex items-center justify-center overflow-hidden cursor-pointer ${
-              submitted && !image ? "border-red-500" : "border-gray-300"
-            }`}
-          >
-            {previewUrl ? (
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="object-cover w-full h-full rounded-full"
-              />
-            ) : (
-              <Camera className="w-6 h-6 text-gray-400" />
-            )}
-          </div>
-          {submitted && !image && (
-            <p className="text-red-500 text-sm mt-1">Please enter image</p>
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={fileInputRef}
-            onChange={handleImageChange}
-          />
-        </div>
-
-        <div className="mt-5">
-          <p>Name</p>
-          <Input
-            placeholder="Enter your name here"
-            className={`h-[40px] mt-2 ${
-              submitted && !name ? "border-red-500" : ""
-            }`}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          {submitted && !name && (
-            <p className="text-red-500 text-sm mt-1">Please enter name</p>
-          )}
-        </div>
-
-        <div className="mt-3">
-          <p>About</p>
-          <Input
-            placeholder="Write about yourself here"
-            className={`h-[100px] mt-2 ${
-              submitted && !about ? "border-red-500" : ""
-            }`}
-            value={about}
-            onChange={(e) => setAbout(e.target.value)}
-          />
-          {submitted && !about && (
-            <p className="text-red-500 text-sm mt-1">
-              Please enter info about yourself
-            </p>
-          )}
-        </div>
-
-        <div className="mt-3">
-          <p>Social media URL</p>
-          <Input
-            placeholder="https://"
-            className={`h-[40px] mt-2 ${
-              submitted && !isValidUrl(social) ? "border-red-500" : ""
-            }`}
-            value={social}
-            onChange={(e) => setSocial(e.target.value)}
-          />
-          {submitted && !isValidUrl(social) && (
-            <p className="text-red-500 text-sm mt-1">
-              Please enter a social link
-            </p>
-          )}
-        </div>
-
-        <div className="flex justify-end mt-7">
-          <Button className="w-full" variant="outline" onClick={handleSubmit}>
-            Continue
+    <div className="px-20 py-10 flex flex-col gap-20 ">
+      <header className="flex justify-between ">
+        <Image src="/brand-logo.svg" alt="logo" width={300} height={200} />
+        <Link href={"/"}>
+          {" "}
+          <Button className="hover:bg-amber-300 hover:text-black">
+            Log out
           </Button>
-        </div>
-      </div>
+        </Link>
+      </header>
+
+      <Card>
+        <CardContent className="px-20 py-10 box-border">
+          <CardHeader className="text-3xl leading-8 font-semibold mb-10 p-0">
+            Complete your profile page
+          </CardHeader>
+
+          <div className=" flex flex-col gap-5">
+            {" "}
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8"
+              >
+                <FormField
+                  control={form.control}
+                  name="photo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Add photo</FormLabel>
+                      <FormControl>
+                        <div>
+                          <div className="w-40 h-40 rounded-full border-2 border-dashed  flex justify-center items-center flex-col">
+                            <Camera className="absolute" />
+
+                            {photoPreview ? (
+                              <img
+                                src={photoPreview}
+                                alt="Profile photo"
+                                width={100}
+                                height={120}
+                                className="rounded-full object-cover w-full h-full"
+                              />
+                            ) : (
+                              <Input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="opacity-0 w-40 h-40 rounded-full"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex gap-5 flex-col">
+                  <FormField
+                    control={form.control}
+                    name="fullname"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter your name here"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription></FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="about"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>About</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Write about yourself here"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription></FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="socialMediaUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Social media URl</FormLabel>
+                        <FormControl>
+                          <Input placeholder="http://" {...field} />
+                        </FormControl>
+                        <FormDescription></FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <Button
+                  className="flex justify-self-end mt-5 hover:bg-amber-300 hover:text-black"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {" "}
+                  {loading ? "Uploading..." : "Continue"}
+                </Button>
+              </form>
+            </Form>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

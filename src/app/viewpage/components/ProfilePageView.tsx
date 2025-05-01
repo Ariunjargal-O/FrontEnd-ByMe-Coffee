@@ -36,68 +36,70 @@ export const ProfilePageView = () => {
     },
   });
 
-
-
   const [profile, setProfile] = useState<UserProfileType | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    
-    useEffect(() => {
-      const getPro = async () => {
-        try {
-          setLoading(true);
-          const userId = localStorage.getItem("userId");
-          
-          if (!userId) {
-            setError("No user ID found. Please log in again.");
-            setLoading(false);
-            return;
-          }
-          
-          const res = await fetch(`http://localhost:8000/profiles/${userId}`, {
-            headers: { "Content-Type": "application/json" },
-          });
-          
-          const data = await res.json();
-          
-          if (data.success) {
-            console.log("Profile data:", data.message);
-            setProfile(data.message);
-          } else {
-            setError(data.message || "Failed to load profile");
-          }
-        } catch (error) {
-          console.error("Error fetching profile:", error);
-          setError("An error occurred while fetching profile");
-        } finally {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getPro = async () => {
+      try {
+        setLoading(true);
+        const userId = localStorage.getItem("userId");
+
+        if (!userId) {
+          setError("No user ID found. Please log in again.");
           setLoading(false);
+          return;
         }
-      };
-      
-      getPro();
-    }, []);
-  
-   
-  
+
+        const res = await fetch(`http://localhost:8000/profiles/${userId}`, {
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          console.log("Profile data:", data.message);
+          setProfile(data.message);
+        } else {
+          setError(data.message || "Failed to load profile");
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        setError("An error occurred while fetching profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getPro();
+  }, []);
+
   return (
     <div className="w-screen h-screen">
       <div className="pt-20"></div>
       <div className="h-1/3 bg-gray-200 flex justify-center items-center">
+        <img
+          className="h-1/3 bg-gray-200 flex justify-center items-center"
+          src={profile?.backgroundimage}
+        ></img>
         <Button className="">
           <Camera /> Add a cover image
         </Button>
       </div>
-      <div className="flex gap-10 w-screen justify-between px-20 absolute top-70">
+      <div className="grid grid-cols-2 gap-10 w-screen px-20 absolute top-70">
         <div className="flex gap-5 flex-col">
           <Card>
-            <CardContent>
+            <CardContent className="box-border">
               <CardHeader className="flex justify-between">
                 <div className="flex flex-row gap-4 items-center">
                   <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={profile?.avatarimage} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
-                  <p className="text-3xl font-bold leading-7">{profile?.name}</p>
+                  <p className="text-3xl font-bold leading-7">
+                    {profile?.name}
+                  </p>
                 </div>
                 <Dialog>
                   <EditProfile />
@@ -108,29 +110,32 @@ export const ProfilePageView = () => {
                 <p className="font-semibold text-base leading-6 pb-3">
                   About {profile?.name}
                 </p>
-                <p className="font-normal text-sm leading-5"> {profile?.about}</p>
+                <p className="font-normal text-sm leading-5">
+                  {" "}
+                  {profile?.about}
+                </p>
               </div>
             </CardContent>
           </Card>
           <Card>
-            <CardContent>
+            <CardContent className="box-border">
               {" "}
               <div className="flex flex-col gap-2 w-[420px]">
                 <p className="font-semibold text-base leading-6 text-black">
                   Social media URL
                 </p>
                 <p className="font-normal text-sm leading-5">
-                http://localhost:3000/profile/{profile?.userid}
+                  {profile?.socialmediaurl}
                 </p>
               </div>
             </CardContent>
           </Card>
           <Card>
-            <CardContent>
+            <CardContent className="box-border">
               <p className="font-semibold text-base leading-6 text-black mb-5">
                 Recent Supporters
               </p>
-              <Card className="w-[584px] h-[140px]">
+              <Card className="">
                 <CardContent className=" flex justify-center items-center">
                   <div className="flex flex-col gap-5">
                     <Heart />
@@ -143,9 +148,9 @@ export const ProfilePageView = () => {
             </CardContent>
           </Card>
         </div>
-        <div className="w-screen">
+        <div className="">
           <Card>
-            <CardContent className="flex flex-col gap-5 ">
+            <CardContent className="flex flex-col gap-5 box-border">
               <CardHeader>
                 <p className="font-semibold text-base leading-6 pb-3">
                   Buy Jake a Coffee
@@ -196,7 +201,10 @@ export const ProfilePageView = () => {
                               Enter BuyMeCoffee or social acount URL:
                             </FormLabel>
                             <FormControl>
-                              <Input placeholder="shadcn" {...field} />
+                              <Input
+                                placeholder="buymeacoffee.com/"
+                                {...field}
+                              />
                             </FormControl>
                             <FormDescription></FormDescription>
                             <FormMessage />
@@ -218,25 +226,28 @@ export const ProfilePageView = () => {
                             <FormItem>
                               <FormLabel>Special message</FormLabel>
                               <FormControl>
-                                <Input placeholder="shadcn" {...field} />
+                                <Input
+                                  placeholder="Please write your message here"
+                                  {...field}
+                                />
                               </FormControl>
                               <FormDescription></FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
+                        <Button
+                          variant={"outline"}
+                          type="submit"
+                          className="bg-gray-200 hover:bg-amber-200"
+                        >
+                          Support
+                        </Button>
                       </form>
                     </Form>
                   </div>
                 </div>
               </div>
-              <Button
-                variant={"outline"}
-                type="submit"
-                className="bg-gray-200 hover:bg-amber-200"
-              >
-                Support
-              </Button>
             </CardContent>
           </Card>
         </div>
