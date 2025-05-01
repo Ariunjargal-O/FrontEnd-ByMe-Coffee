@@ -28,3 +28,14 @@ export type UserType = {
 export type DecodedTokenType = {
   user: { email: string; password: string; id: number };
 };
+
+export type DonationType = {
+  amount: number;
+  createdat: string;
+  donorid: number;
+  id: number;
+  recipientid: number;
+  socialurlorbuymeacoffee: string;
+  specialmessage: string;
+  updatedat: string;
+};

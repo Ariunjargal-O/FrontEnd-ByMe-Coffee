@@ -8,8 +8,8 @@ export default function RootLayout({
   return (
 
       <div>
-        <Toaster />
-        {children}
+        {children}<Toaster />
+        
       </div>
  
   );

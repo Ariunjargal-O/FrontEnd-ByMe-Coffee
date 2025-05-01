@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { UserProfileType } from "@/constnants/Type";
+import { DonationType, UserProfileType } from "@/constnants/Type";
 import { CopyButton } from "./components/ProfileShare";
 
 export default function Page() {
@@ -21,26 +21,28 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const userId = localStorage.getItem("userId");
+
+
   useEffect(() => {
     const getPro = async () => {
       try {
         setLoading(true);
-        const userId = localStorage.getItem("userId");
         
+
         if (!userId) {
           setError("No user ID found. Please log in again.");
           setLoading(false);
           return;
         }
-        
+
         const res = await fetch(`http://localhost:8000/profiles/${userId}`, {
           headers: { "Content-Type": "application/json" },
         });
-        
+
         const data = await res.json();
-        
+
         if (data.success) {
-          console.log("Profile data:", data.message);
+          // console.log("Profile data:", data.message);
           setProfile(data.message);
         } else {
           setError(data.message || "Failed to load profile");
@@ -52,7 +54,7 @@ export default function Page() {
         setLoading(false);
       }
     };
-    
+
     getPro();
   }, []);
 
@@ -60,6 +62,32 @@ export default function Page() {
     localStorage.removeItem("userId");
   };
 
+  const [donations, setDonations] = useState<DonationType>();
+  useEffect(() => {
+    const getDonation = async () => {
+      try {
+        
+        const res = await fetch(
+          `http://localhost:8000/donations/total-earnings/${userId}`,
+          {
+            headers: { "Content-type": "application/json" },
+          }
+        );
+
+        const data = await res.json();
+
+        console.log(data.message);
+
+        if (data.success) {
+          console.log("Profile data:", data.message);
+          setDonations(data);
+        } else {
+          setError(data.message || "Failed to load donations");
+        }
+      } catch (error) {}
+    };
+    getDonation();
+  }, []);
   return (
     <div className="px-20 flex gap-5 flex-col">
       <Badge
@@ -71,10 +99,11 @@ export default function Page() {
             <Menu />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-45">
-          <Link href={"/profile/${userId}"}>
-             <DropdownMenuItem className="font-semibold">
+            <Link href={"/profile/${userId}"}>
+              <DropdownMenuItem className="font-semibold">
                 View my page
-              </DropdownMenuItem></Link>
+              </DropdownMenuItem>
+            </Link>
             <Link href={"/dashboard"}>
               <DropdownMenuItem className="font-semibold">
                 Dashboard
@@ -130,7 +159,7 @@ export default function Page() {
                   </p>
                 </div>
               </div>
-              <CopyButton userId = {userId} />
+              <CopyButton userId={userId} />
             </div>
             <hr className="my-5" />
             <div>
@@ -152,7 +181,7 @@ export default function Page() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <p className="text-4xl font-bold py-4">${}</p>
+              <p className="text-4xl font-bold py-4">${donations?.amount}</p>
 
               <div className="flex gap-10 justify-start">
                 <div className="flex gap-1 items-center">
