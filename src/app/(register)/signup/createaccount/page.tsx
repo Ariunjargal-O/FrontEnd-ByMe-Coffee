@@ -28,7 +28,7 @@ export default function ProfileAcoountSec() {
   const userId = localStorage.getItem("userId");
 
   const formSchema = z.object({
-    fullname: z
+name: z
       .string()
       .min(2, {
         message: "Fullname must be at least 2 characters.",
@@ -39,7 +39,7 @@ export default function ProfileAcoountSec() {
 
     about: z
       .string()
-      .min(100)
+      .min(10)
       .max(500, {
         message: "About section cannot be longer than 500 characters.",
       })
@@ -69,7 +69,7 @@ export default function ProfileAcoountSec() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: "",
+     name: "",
       about: "",
       photo: "",
       socialMediaUrl: "",
@@ -120,20 +120,21 @@ export default function ProfileAcoountSec() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${BASE_URL}/profiles/${userId}`, {
+      const res = await fetch(`${BASE_URL}/profiles/create-pro/${userId}`, {
         method: "POST",
         body: JSON.stringify({
-          fullname: data.fullname,
+          name: data.name,
           about: data.about,
           photo: data.photo,
           socialMediaUrl: data.socialMediaUrl,
         }),
-        headers: { "Content-Type": "application/app" },
+        headers: { "Content-Type": "application/json" },
       });
 
       if (res.ok) {
         toast.success("Profile updated successfully!");
-        router.push("signup/createaccount/bankcard");
+        router.push("/signup/createaccount/bankcard");
+       
       } else {
         console.error("Error submitting profile:", res.statusText);
         toast.error("Failed to update profile. Please try again.");
@@ -211,7 +212,7 @@ export default function ProfileAcoountSec() {
                 <div className="flex gap-5 flex-col">
                   <FormField
                     control={form.control}
-                    name="fullname"
+                    name="name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Name</FormLabel>
