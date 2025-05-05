@@ -35,6 +35,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CountryApiType } from "@/constnants/Type";
 import { BASE_URL } from "@/constnants";
 import { toast } from "sonner";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function Page() {
   const formSchema = z.object({
@@ -85,7 +86,7 @@ export default function Page() {
     CountryApi();
   }, []);
 
-  const userId = localStorage.getItem("userId");
+const { state: userId } = useLocalStorage("userId");
 
   const router = useRouter();
   const onSubmit = async (data: z.infer<typeof formSchema>) => {

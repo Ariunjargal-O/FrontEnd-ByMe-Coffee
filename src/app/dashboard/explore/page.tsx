@@ -22,12 +22,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { UserProfileType } from "@/constnants/Type";
 import { BASE_URL } from "@/constnants";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function ExpolorePage() {
   const [profile, setProfile] = useState<UserProfileType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const userId = localStorage.getItem("userId");
+  const { state: userId } = useLocalStorage("userId");
+
 
   console.log(profile);
   useEffect(() => {

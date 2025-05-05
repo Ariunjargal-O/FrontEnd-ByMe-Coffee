@@ -1,21 +1,14 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import Autoplay from "embla-carousel-autoplay";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Username } from "./components/Username";
-import { useEffect, useState } from "react";
-import { BASE_URL } from "@/constnants";
 
 
 

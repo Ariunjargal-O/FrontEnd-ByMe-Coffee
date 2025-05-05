@@ -14,13 +14,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { DonationType, UserProfileType } from "@/constnants/Type";
 import { CopyButton } from "./components/ProfileShare";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function Page() {
   // Initialize as null to properly handle conditional rendering
   const [profile, setProfile] = useState<UserProfileType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const userId = localStorage.getItem("userId");
+ 
+  const { state: userId } = useLocalStorage("userId");
 
 
   useEffect(() => {

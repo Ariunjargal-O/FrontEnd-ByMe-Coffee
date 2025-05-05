@@ -7,10 +7,11 @@ import { useCallback, useState } from "react";
 
 // Fix the type definition in props
 interface CopyButtonProps {
-  userId?: string | null;
+  userId?: string | null | number;
 }
 
 export const CopyButton = ({ userId }: CopyButtonProps) => {
+
   const [copied, setCopied] = useState(false);
 
   const variants = {

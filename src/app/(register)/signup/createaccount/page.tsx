@@ -22,13 +22,14 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BASE_URL } from "@/constnants";
 import { toast } from "sonner";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 // import { useNavigate } from "react-router-dom";
 
 export default function ProfileAcoountSec() {
-  const userId = localStorage.getItem("userId");
-
+  const { state: userId } = useLocalStorage("userId");
+ 
   const formSchema = z.object({
-name: z
+    name: z
       .string()
       .min(2, {
         message: "Fullname must be at least 2 characters.",
@@ -69,7 +70,7 @@ name: z
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-     name: "",
+      name: "",
       about: "",
       photo: "",
       socialMediaUrl: "",
