@@ -108,7 +108,7 @@ export default function Page() {
 
       if (res.ok) {
         toast.success("Profile updated successfully!");
-        router.push("signup/createaccount/bankcard");
+        router.push("dashboard");
       } else {
         console.error("Error submitting profile:", res.statusText);
         toast.error("Failed to update profile. Please try again.");
@@ -121,6 +121,11 @@ export default function Page() {
     } finally {
     }
   };
+
+  const BackingBtn = () => {
+    router.push("/signup/createaccount")
+  }
+
 
   return (
     <div className="px-20 py-10 flex flex-col gap-20 ">
@@ -304,6 +309,7 @@ export default function Page() {
                   <Button
                     className=" mt-5 hover:bg-amber-300 hover:text-black bg-gray-300 text-black w-50"
                     type="button"
+                    onClick={BackingBtn}
                   >
                     <ChevronLeft />
                     Back

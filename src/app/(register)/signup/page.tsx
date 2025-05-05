@@ -13,7 +13,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Username } from "./Components/Username";
+import { Username } from "./components/Username";
 import { useEffect, useState } from "react";
 import { BASE_URL } from "@/constnants";
 

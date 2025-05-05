@@ -99,7 +99,7 @@ export default function Page() {
             <Menu />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-45">
-            <Link href={"/profile/${userId}"}>
+            <Link href={`"/profile/${userId}"`}>
               <DropdownMenuItem className="font-semibold">
                 View my page
               </DropdownMenuItem>
@@ -109,7 +109,10 @@ export default function Page() {
                 Dashboard
               </DropdownMenuItem>
             </Link>
-            <DropdownMenuItem>My account</DropdownMenuItem>
+            <Link href={"/dashboard/accountsettings"}>
+                {" "}
+                <DropdownMenuItem>My account</DropdownMenuItem>
+              </Link>
             <DropdownMenuItem>Refer a creator</DropdownMenuItem>
             <DropdownMenuItem>What's name</DropdownMenuItem>
             <Link href={"/"}>

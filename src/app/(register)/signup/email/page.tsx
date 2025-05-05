@@ -32,7 +32,7 @@ import { FormValuesType } from "@/constnants/Type";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { error } from "console";
-import { Username } from "../Components/Username";
+import { Username } from "../components/Username";
 
 export default function EmailPage() {
   const formSchema = z.object({

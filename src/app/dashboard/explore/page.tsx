@@ -1,3 +1,4 @@
+"use client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,8 +19,54 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { UserProfileType } from "@/constnants/Type";
+import { BASE_URL } from "@/constnants";
 
 export default function ExpolorePage() {
+  const [profile, setProfile] = useState<UserProfileType | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const userId = localStorage.getItem("userId");
+
+  console.log(profile);
+  useEffect(() => {
+    const getPro = async () => {
+      try {
+        setLoading(true);
+
+        if (!userId) {
+          setError("No user ID found. Please log in again.");
+          setLoading(false);
+          return;
+        }
+
+        const res = await fetch(`${BASE_URL}/${userId}`, {
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          // console.log("Profile data:", data.message);
+          setProfile(data.message);
+        } else {
+          setError(data.message || "Failed to load profile");
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        setError("An error occurred while fetching profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getPro();
+  }, []);
+
+  const Logout = () => {
+    localStorage.removeItem("userId");
+  };
   return (
     <div>
       <div className="px-10 mt-20 w-full">
@@ -32,18 +79,30 @@ export default function ExpolorePage() {
               <Menu />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-45">
-              <DropdownMenuItem className="font-semibold">
-                View my page
-              </DropdownMenuItem>
-              <DropdownMenuItem className="font-semibold">
-                Dashboard
-              </DropdownMenuItem>
-              <DropdownMenuItem>My account</DropdownMenuItem>
+              <Link href={`"/profile/${userId}"`}>
+                <DropdownMenuItem className="font-semibold">
+                  View my page
+                </DropdownMenuItem>
+              </Link>
+              <Link href={"/dashboard"}>
+                <DropdownMenuItem className="font-semibold">
+                  Dashboard
+                </DropdownMenuItem>
+              </Link>
+              <Link href={"/dashboard/accountsettings"}>
+                {" "}
+                <DropdownMenuItem>My account</DropdownMenuItem>
+              </Link>
               <DropdownMenuItem>Refer a creator</DropdownMenuItem>
               <DropdownMenuItem>What's name</DropdownMenuItem>
-              <DropdownMenuItem className="font-normal text-gray-400 ">
-                Logout
-              </DropdownMenuItem>
+              <Link href={"/"}>
+                <DropdownMenuItem
+                  className="font-normal text-gray-400 hover:bg-amber-300"
+                  onClick={Logout}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -86,12 +145,12 @@ export default function ExpolorePage() {
                 >
                   <div className="flex gap-5 items-center">
                     <Avatar className="w-15 h-15">
-                      <AvatarImage src="https://github.com/shadcn.png" />
+                      <AvatarImage src={profile?.avatarimage} />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
                       <p className="font-bold text-2xl leading-6">
-                        Hi, Ariunjargal
+                        Hi, {profile?.name}
                       </p>
                     </div>
                   </div>
@@ -112,12 +171,7 @@ export default function ExpolorePage() {
                     About Space ranger
                   </p>
                   <p className="font-normal text-sm leading-5">
-                    All day, every day, we're watching, listening to, reading
-                    and absorbing politics. It's exhausting. We then report on
-                    what we've seen in a way that's as chill as possible. None
-                    of the sensationalism and division you'll find elsewhere.
-                    It's about clarity, focus, approachability, and having a
-                    little wry smile almost all the time.
+                    {profile?.about}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 w-[420px]">
@@ -125,7 +179,7 @@ export default function ExpolorePage() {
                     Social media URL
                   </p>
                   <p className="font-normal text-sm leading-5">
-                    https://buymeacoffee.com/baconpancakes1
+                    {profile?.socialmediaurl}
                   </p>
                 </div>
               </div>

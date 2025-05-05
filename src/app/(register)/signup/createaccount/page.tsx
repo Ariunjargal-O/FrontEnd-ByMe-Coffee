@@ -116,24 +116,24 @@ name: z
   };
 
   const router = useRouter();
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (val: z.infer<typeof formSchema>) => {
     setLoading(true);
 
     try {
       const res = await fetch(`${BASE_URL}/profiles/create-pro/${userId}`, {
         method: "POST",
         body: JSON.stringify({
-          name: data.name,
-          about: data.about,
-          photo: data.photo,
-          socialMediaUrl: data.socialMediaUrl,
+          name: val.name,
+          about: val.about,
+          photo: val.photo,
+          socialMediaUrl: val.socialMediaUrl,
         }),
         headers: { "Content-Type": "application/json" },
       });
 
       if (res.ok) {
         toast.success("Profile updated successfully!");
-        router.push("/signup/createaccount/bankcard");
+        router.push("/signup/bankcard");
        
       } else {
         console.error("Error submitting profile:", res.statusText);
