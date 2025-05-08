@@ -8,17 +8,17 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { Username } from "./components/Username";
-
-
+import { Username } from "./_components/Username";
 
 export default function SignUpPage() {
-
   return (
     <div className="w-full bg-yellow-300 flex h-screen ">
       <div className="w-1/2">
         <div className="flex items-center gap-3 pt-10 pl-10 absolute ">
-         <Link href={"/"}> <Image alt="logo" src="/coffee-logo.svg" width={30} height={30} /></Link>
+          <Link href={"/"}>
+            {" "}
+            <Image alt="logo" src="/coffee-logo.svg" width={30} height={30} />
+          </Link>
           <span>Welcome to Buy Me a Coffee</span>
         </div>
         <div className="flex justify-center items-center h-full px-5">
@@ -63,9 +63,7 @@ export default function SignUpPage() {
           </Link>
         </div>
         <div className="flex justify-center self-center h-full">
-        <Username/>         
-          
-
+          <Username />
         </div>
       </div>
     </div>
